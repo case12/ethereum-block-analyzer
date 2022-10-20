@@ -46,7 +46,7 @@ async function main() {
       "count"
     ).reverse();
 
-    console.log("Showing top 10 addresses interacted with last block");
+    console.log("Top 10 addresses interacted with last block");
     console.log(sortedTransactions.slice(0, 10));
   });
 }
