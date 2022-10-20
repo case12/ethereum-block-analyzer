@@ -55,9 +55,3 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
-
-[
-  { name: "Unknown", count: 30 },
-  { name: "Uniswap Contract", count: 5 },
-  { name: "Sushiswap Contract", count: 2 },
-];
