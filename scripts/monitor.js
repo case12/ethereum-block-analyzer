@@ -3,51 +3,68 @@ const moment = require("moment");
 const _ = require("lodash");
 const { ADDRESS_LIST } = require("../constants/addresses");
 
-const provider = hre.ethers.getDefaultProvider();
+function createAddressToCountMap(transactions) {
+  return _.reduce(
+    transactions,
+    (result, transaction) => {
+      const resultEntry = result[transaction.to];
+      if (!resultEntry) {
+        result[transaction.to] = { address: transaction.to, count: 1 };
+      } else {
+        resultEntry.count++;
+      }
+
+      return result;
+    },
+    {}
+  );
+}
+
+function insertKnownAddressNames(transactionsMap) {
+  ADDRESS_LIST.forEach((address) => {
+    if (transactionsMap[address.address]) {
+      _.set(transactionsMap, `${address.address}.name`, address.name);
+    }
+  });
+}
+
+function sortByCount(transactions) {
+  return _.sortBy(transactions, "count").reverse();
+}
+
+function getSortedTransactionsByCount(transactions) {
+  const transactionsMap = createAddressToCountMap(transactions);
+
+  insertKnownAddressNames(transactionsMap);
+
+  const finalTransactionsList = _.values(transactionsMap);
+
+  return sortByCount(finalTransactionsList);
+}
+
+function printBlockInfo(block) {
+  console.log("\n\n***************************");
+  console.log(`Block Number: ${block.number}`);
+  console.log(`Block Hash: ${block.hash}`);
+  console.log(`Time: ${moment(block.timestamp * 1000).format("LL LTS")}`);
+  console.log(`Number of transactions: ${block.transactions.length}`);
+}
+
+function printTopInteractedAddresses(block, count) {
+  const transactions = getSortedTransactionsByCount(block.transactions);
+
+  console.log("\nTop 10 addresses interacted with last block");
+  console.log(transactions.slice(0, count));
+}
 
 async function main() {
+  const provider = hre.ethers.getDefaultProvider();
+
   provider.on("block", async (blockNumber) => {
     const block = await provider.getBlockWithTransactions(blockNumber);
 
-    console.log("\n\n***************************");
-    console.log(`Block Number: ${block.number}`);
-    console.log(`Block Hash: ${block.hash}`);
-    console.log(`Time: ${moment(block.timestamp * 1000).format("LL LTS")}`);
-    console.log(`Number of transactions: ${block.transactions.length}`);
-
-    const initialTransactionMap = _.reduce(
-      ADDRESS_LIST,
-      (acc, address) => {
-        return {
-          ...acc,
-          [address.address]: { name: address.name, count: 0 },
-        };
-      },
-      {}
-    );
-
-    const transactionsMap = _.reduce(
-      block.transactions,
-      (result, transaction) => ({
-        ...result,
-        [transaction.to]: result[transaction.to]
-          ? {
-              ...result[transaction.to],
-              address: transaction.to,
-              count: result[transaction.to].count + 1,
-            }
-          : { address: transaction.to, count: 1 },
-      }),
-      initialTransactionMap
-    );
-
-    const sortedTransactions = _.sortBy(
-      _.values(transactionsMap),
-      "count"
-    ).reverse();
-
-    console.log("Top 10 addresses interacted with last block");
-    console.log(sortedTransactions.slice(0, 10));
+    printBlockInfo(block);
+    printTopInteractedAddresses(block, 10);
   });
 }
 
