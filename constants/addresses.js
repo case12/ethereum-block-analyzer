@@ -31,6 +31,11 @@ const addresses = [
     name: "There (Bot?)",
     address: "0x6D88EB0fEb4CF93cb0D89f22DEEecd627CB5F318",
   },
+  {
+    name: "XEN Crypto: XEN Token",
+    address: "0x06450dEe7FD2Fb8E39061434BAbCFC05599a6Fb8",
+  },
+  { name: "zkSync", address: "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF" },
 ];
 
 module.exports = { ADDRESS_LIST: addresses };

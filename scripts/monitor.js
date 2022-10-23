@@ -2,6 +2,8 @@ const hre = require("hardhat");
 const moment = require("moment");
 const _ = require("lodash");
 const { ADDRESS_LIST } = require("../constants/addresses");
+const { forEach } = require("lodash");
+const { Colors } = require("../constants/ansi_escape_codes");
 
 function createAddressToCountMap(transactions) {
   return _.reduce(
@@ -53,8 +55,17 @@ function printBlockInfo(block) {
 function printTopInteractedAddresses(block, count) {
   const transactions = getSortedTransactionsByCount(block.transactions);
 
-  console.log("\nTop 10 addresses interacted with last block");
-  console.log(transactions.slice(0, count));
+  console.log("\nTop 10 addresses interacted with last block\n");
+
+  forEach(transactions.slice(0, count), (transaction, index) => {
+    console.log(
+      `${index + 1}: ${Colors.Brown_Orange}${
+        transaction.name || transaction.address
+      }${Colors.No_Color} - ${Colors.Green}${transaction.count}${
+        Colors.No_Color
+      }`
+    );
+  });
 }
 
 async function main() {
