@@ -1,13 +1,12 @@
-# Sample Hardhat Project
+# Ethereum Block Analyzer
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+Listens for new blocks on eth mainnet. Lists top 10 contracts/addresses interacted with. 
 
-Try running some of the following tasks:
+### Setup
+1. Create .env file lusing .env.sample as template.
+2. Insert alchemy api key
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
+### Run
+```
+npx hardhat run scripts/monitor.js
 ```
