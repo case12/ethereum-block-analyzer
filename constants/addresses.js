@@ -36,6 +36,10 @@ const addresses = [
     address: "0x06450dEe7FD2Fb8E39061434BAbCFC05599a6Fb8",
   },
   { name: "zkSync", address: "0xaBEA9132b05A70803a4E85094fD0e1800777fBEF" },
+  {
+    name: "Wrapped Ether",
+    address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+  },
 ];
 
 module.exports = { ADDRESS_LIST: addresses };

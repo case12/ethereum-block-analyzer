@@ -52,6 +52,18 @@ function printBlockInfo(block) {
   console.log(`Number of transactions: ${block.transactions.length}`);
 }
 
+function getTransactionNameOutput(transaction) {
+  if (transaction.name) return transaction.name;
+
+  return (
+    "\033]8;;" +
+    `https://etherscan.io/address/${transaction.address}` +
+    "\007" +
+    transaction.address +
+    "\033]8;;\007"
+  );
+}
+
 function printTopInteractedAddresses(block, count) {
   const transactions = getSortedTransactionsByCount(block.transactions);
 
@@ -59,14 +71,14 @@ function printTopInteractedAddresses(block, count) {
 
   forEach(transactions.slice(0, count), (transaction, index) => {
     console.log(
-      `${index + 1}: ${Colors.Brown_Orange}${
-        transaction.name || transaction.address
-      }${Colors.No_Color} - ${Colors.Green}${transaction.count}${
-        Colors.No_Color
-      }`
+      `${index + 1}: ${Colors.Brown_Orange}` +
+        getTransactionNameOutput(transaction) +
+        ` ${Colors.No_Color} - ${Colors.Green}${transaction.count}${Colors.No_Color}`
     );
   });
 }
+
+// '\e]8;;http://example.com\aThis is a link\e]8;;\a'
 
 async function main() {
   const provider = new hre.ethers.providers.AlchemyProvider(
