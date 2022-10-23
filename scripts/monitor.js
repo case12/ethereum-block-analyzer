@@ -58,7 +58,10 @@ function printTopInteractedAddresses(block, count) {
 }
 
 async function main() {
-  const provider = hre.ethers.getDefaultProvider();
+  const provider = new hre.ethers.providers.AlchemyProvider(
+    "homestead",
+    process.env.ALCHEMY_API_KEY
+  );
 
   provider.on("block", async (blockNumber) => {
     const block = await provider.getBlockWithTransactions(blockNumber);
